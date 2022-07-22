@@ -1,0 +1,4 @@
+{
+    "GetAllParentChilCategories":"https://innovatory-app-server.herokuapp.com/categories/getCategories",
+    "GetAllGlobalInventoryItems":"https://innovatory-app-server.herokuapp.com/items/getAllItems"
+}
