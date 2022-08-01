@@ -1,4 +1,6 @@
 {
     "GetAllParentChilCategories":"https://innovatory-app-server.herokuapp.com/categories/getCategories",
-    "GetAllGlobalInventoryItems":"https://innovatory-app-server.herokuapp.com/items/getAllItems"
+    "GetAllGlobalInventoryItems":"https://innovatory-app-server.herokuapp.com/items/getAllItems",
+    "GetGlobalInventoryItemsByTab":"https://innovatory-app-server.herokuapp.com/items/getItems",
+    "GetGlobalInventoryItemsBySearch":"https://innovatory-app-server.herokuapp.com/items/searchItems"
 }
