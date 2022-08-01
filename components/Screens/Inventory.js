@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ActivityIndicator, Image, ScrollView  } from 'react-native'
 import Header from '../Shared/Header'
 import Icon from 'react-native-vector-icons/Entypo';
 import MaterialTabs from 'react-native-material-tabs';
@@ -39,7 +39,10 @@ const Inventory = ({navigation}) => {
         }
       });
       setTabs(tempTabNames);
+      console.log(tempTabNames)
       setLoadoing(false);
+      setItems(tempTabData)
+      console.log(tempTabData)
     })
   }
   return (
@@ -75,24 +78,23 @@ const Inventory = ({navigation}) => {
           textStyle={{color:'white'}}
           activeTextColor="white"
       />
-      <View>
+      <ScrollView >
         {
           items.map((item, index)=>{
             return(
-            <View key={index}>
-              <Text>{item.name}</Text>
+            <View key={index} style={styles.itemRow}>
+              <Image source={require('../../assets/images/inventory/lays_french_cheese.png')} />
             </View>
             )
           })
         }
-      </View>
+      </ScrollView >
     </>
     }
     </View>
   )
 }
 export default Inventory
-
 const styles = StyleSheet.create({
   input: {
     borderWidth: 0,
@@ -109,5 +111,8 @@ const styles = StyleSheet.create({
     position:'absolute',
     top:20,
     right:20,
+  },
+  itemRow:{
+    flexDirection:'row'
   }
 })
