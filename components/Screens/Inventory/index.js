@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ActivityIndicator, Image, ScrollView, Button  } from 'react-native'
-import Header from '../Shared/Header'
+import React, { useState, useEffect } from 'react';
+import { 
+    StyleSheet, Text, View, TextInput, TouchableOpacity,
+    ActivityIndicator, Image, ScrollView, Modal, Button, Pressable
+} from 'react-native';
+import Header from '../../Shared/Header';
 import Icon from 'react-native-vector-icons/Entypo';
 import MaterialTabs from 'react-native-material-tabs';
 import axios from 'axios';
-import API from '../../apis/index.json'
+import API from '../../../apis/index.json';
+
+import ItemInfo from './ItemInfo';
 
 const Inventory = ({navigation}) => {
 
@@ -15,6 +20,9 @@ const Inventory = ({navigation}) => {
   const [tabLoading, setTabLoadoing] = useState(false);
   const [items, setItems] = useState([{id:'all',tab:'All Items',items:[], fetched:false}])
   const [searchItems, setSearchItems] = useState([]);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [itemInfo, setItemInfo] = useState({});
 
   useEffect(() => {
     fetchData();
@@ -29,14 +37,16 @@ const Inventory = ({navigation}) => {
   }, [selectedTab]);
 
   useEffect(() => {
-      axios.get(API.GetGlobalInventoryItemsBySearch,{
-        headers: {'searchword': `${searchTerm}`}
-      }).then((res)=>{
-        console.log(res.data);
-        setSearchItems(res.data)
-      })
-  }, [searchTerm])
-  
+      if(searchTerm.length>2){
+        axios.get(API.GetGlobalInventoryItemsBySearch,{
+          headers: {'searchword': `${searchTerm}`}
+        }).then((res)=>{
+          setSearchItems(res.data);
+        })
+      }else if(searchTerm.length<2){
+        setSearchItems([]);
+      }
+  }, [searchTerm]);
 
   const fetchData = async() => {
     await axios.get(API.GetAllParentChilCategories).then(async(res)=>{
@@ -60,7 +70,6 @@ const Inventory = ({navigation}) => {
       setItems(tempItems);
     })
   }
-
   const fetchItemsByTab = async(i) => {
     setTabLoadoing(true);
     await axios.get(API.GetGlobalInventoryItemsByTab,{
@@ -81,6 +90,7 @@ const Inventory = ({navigation}) => {
   return (
     <View style={{flex:1}}>
     <Header navigation={navigation} />
+
     <View style={{backgroundColor:'#1A6DBB'}}>
     <TextInput
         style={styles.input}
@@ -92,9 +102,10 @@ const Inventory = ({navigation}) => {
         <Icon name="cross" color={'silver'} size={30} />
       </TouchableOpacity>
     </View>
+
     {loading==true && 
       <ActivityIndicator color={'#1A6DBB'} size='large'
-        style={{marginTop:'auto', marginBottom:'auto'}} 
+        style={{marginTop:'auto', marginBottom:'auto'}}
       />
     }
     {(loading==false && searchTerm=='') && 
@@ -140,7 +151,9 @@ const Inventory = ({navigation}) => {
                   style={{
                     backgroundColor:'#1A6DBB', paddingLeft:30, paddingRight:30,
                     borderRadius:25, paddingBottom:3, paddingTop:3
-                    }}>
+                    }}
+                  onPress={()=>{setModalVisible(true); setItemInfo(item)}}
+                    >
                   <Text style={{color:'white'}}>Info</Text>
                 </TouchableOpacity>
               </View>
@@ -186,6 +199,31 @@ const Inventory = ({navigation}) => {
         }
       </ScrollView>
     }
+    {modalVisible &&
+    <View style={{
+        position:'absolute', height:"100%", width:"100%",
+        backgroundColor:'#373737', opacity:0.7
+        }}>
+    </View>
+    }
+     <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TouchableOpacity style={styles.buttonClose} onPress={()=>setModalVisible(!modalVisible)}>
+                <Icon name="cross" color={'grey'} style={styles.modalCross} />
+            </TouchableOpacity>
+            <ItemInfo itemInfo={itemInfo} />
+          </View>
+        </View>
+      </Modal>
     </View>
   )
 }
@@ -222,7 +260,43 @@ const styles = StyleSheet.create({
     width:50,
     margin:5
   },
-  btn:{
-    backgroundColor:'red'
+  //modalstyles
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    width:'90%',
+    height:'70%',
+    alignSelf:'center',
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  buttonClose: {
+    position:'absolute',
+    top:-11,
+    right:-11,
+  },
+  modalCross:{
+    color:'grey',
+    fontSize:18,
+    backgroundColor:'white',
+    padding:10,
+    borderColor:'grey',
+    borderWidth:1,
+    borderRadius:50
   }
 })
