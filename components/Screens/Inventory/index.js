@@ -10,6 +10,7 @@ import axios from 'axios';
 import API from '../../../apis/index.json';
 
 import ItemInfo from './ItemInfo';
+import Cart from '../../Shared/Cart';
 
 const Inventory = ({navigation}) => {
 
@@ -70,6 +71,7 @@ const Inventory = ({navigation}) => {
       setItems(tempItems);
     })
   }
+  
   const fetchItemsByTab = async(i) => {
     setTabLoadoing(true);
     await axios.get(API.GetGlobalInventoryItemsByTab,{
@@ -87,10 +89,14 @@ const Inventory = ({navigation}) => {
     })
   }
 
+  const closeModal = () => {
+    setModalVisible(false);
+  }
+
   return (
     <View style={{flex:1}}>
+    
     <Header navigation={navigation} />
-
     <View style={{backgroundColor:'#1A6DBB'}}>
     <TextInput
         style={styles.input}
@@ -102,7 +108,6 @@ const Inventory = ({navigation}) => {
         <Icon name="cross" color={'silver'} size={30} />
       </TouchableOpacity>
     </View>
-
     {loading==true && 
       <ActivityIndicator color={'#1A6DBB'} size='large'
         style={{marginTop:'auto', marginBottom:'auto'}}
@@ -147,12 +152,12 @@ const Inventory = ({navigation}) => {
                 </View>
                </View>
               <View style={{alignSelf:'center'}}>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={{
-                    backgroundColor:'#1A6DBB', paddingLeft:30, paddingRight:30,
+                    backgroundColor:'#1A6DBB', paddingLeft:25, paddingRight:25,
                     borderRadius:25, paddingBottom:3, paddingTop:3
                     }}
-                  onPress={()=>{setModalVisible(true); setItemInfo(item)}}
+                    onPress={()=>{setModalVisible(true); setItemInfo(item)}}
                     >
                   <Text style={{color:'white'}}>Info</Text>
                 </TouchableOpacity>
@@ -165,31 +170,24 @@ const Inventory = ({navigation}) => {
       }
     </>
     }
-    {
-      searchTerm!=="" &&
+    {searchTerm!=="" &&
       <ScrollView>
         {
           searchItems.map((item, index)=>{
             return(
             <View key={index} style={styles.content}>
                <View style={{width:200, flexDirection:'row'}}>
-                <Image
-                  style={styles.image}
-                  source={{
-                    uri:item.image
-                  }}
-                />
+                <Image style={styles.image} source={{ uri:item.image }} />
                 <View style={{padding:10 ,maxWidth:200}}>
                 <Text style={{fontWeight:'bold'}}>{item.name}</Text>
                 <Text>{item.units}</Text>
                 </View>
                </View>
               <View style={{alignSelf:'center'}}>
-                <TouchableOpacity 
-                  style={{
+                <TouchableOpacity style={{
                     backgroundColor:'#1A6DBB', paddingLeft:30, paddingRight:30,
                     borderRadius:25, paddingBottom:3, paddingTop:3
-                    }}>
+                }}>
                   <Text style={{color:'white'}}>Info</Text>
                 </TouchableOpacity>
               </View>
@@ -199,13 +197,7 @@ const Inventory = ({navigation}) => {
         }
       </ScrollView>
     }
-    {modalVisible &&
-    <View style={{
-        position:'absolute', height:"100%", width:"100%",
-        backgroundColor:'#373737', opacity:0.7
-        }}>
-    </View>
-    }
+    {modalVisible && <View style={styles.modalBack}></View>}
      <Modal
         animationType="fade"
         transparent={true}
@@ -220,10 +212,11 @@ const Inventory = ({navigation}) => {
             <TouchableOpacity style={styles.buttonClose} onPress={()=>setModalVisible(!modalVisible)}>
                 <Icon name="cross" color={'grey'} style={styles.modalCross} />
             </TouchableOpacity>
-            <ItemInfo itemInfo={itemInfo} />
+            <ItemInfo itemInfo={itemInfo} closeModal={closeModal} />
           </View>
         </View>
-      </Modal>
+     </Modal>
+      <Cart/>
     </View>
   )
 }
@@ -264,18 +257,15 @@ const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22
+    alignItems: "center"
   },
   modalView: {
     width:'90%',
     height:'70%',
     alignSelf:'center',
-    margin: 20,
     backgroundColor: "white",
     borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
+    padding: 30,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -298,5 +288,9 @@ const styles = StyleSheet.create({
     borderColor:'grey',
     borderWidth:1,
     borderRadius:50
+  },
+  modalBack:{
+    position:'absolute', height:"100%", width:"100%",
+    backgroundColor:'#373737', opacity:0.7, zIndex:1
   }
 })

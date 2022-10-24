@@ -1,75 +1,22 @@
-import React, { useRef, useState, useEffect } from "react";
-import { StyleSheet, Text, View, Button, TouchableHighlight, Animated, Easing, TouchableOpacity } from 'react-native'
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import Entypo from 'react-native-vector-icons/Entypo';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+
 import MenuIcon from 'react-native-vector-icons/SimpleLineIcons';
+
+import Cart from "../Shared/Cart";
+import Drawer from "../Shared/Drawer";
 
 const HomeScreen = ({navigation}) => {
 
-  const translation = useRef(new Animated.Value(0)).current;
-    const openDrawer = () => {
-        Animated.timing(translation,{
-            toValue:400,
-            duration: 300,
-            easing: Easing.in,
-            useNativeDriver:true
-        }).start();
-    }
-    const closeDrawer = () => {
-        Animated.timing(translation,{
-            toValue:-580,
-            duration: 200,
-            useNativeDriver:true
-        }).start();
-    }
+    const[drawerState, setDrawerState] = useState(false) 
+
   return (
     <>
-    {/* Drawer */}
-    <Animated.View style={{backgroundColor:'#1A6DBB',position:'absolute',zIndex:1,height:'100%',width:'80%',
-        transform:[{translateX:translation}],left:-400
-    }}>
-        <View style={{marginLeft:15, marginTop:30, paddingRight:50}}>
-            <Text style={{ color:'white',fontSize:24, fontFamily:'Inter-Black' }}
-            >Syed Muhammad Abdullah Ali Zaidi</Text>
-            <Text style={{ color:'white',fontSize:14, fontFamily:'Inter-Medium' }}
-            >syedabdullahteamhail@gmail.com</Text>
-        </View>
-        <View
-            style={{
-                marginTop:20,
-                borderBottomColor: 'white',
-                borderBottomWidth: 1
-            }}
-        />
-        <View style={{marginTop:40, paddingLeft:20}}>
-
-        <TouchableOpacity onPress={()=>navigation.navigate("Profile")} style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom:15}}>
-            <EvilIcons name="user" style={styles.menuIconProfile} />
-            <Text style={styles.menuFonts}>Profile</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("Orders")} style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom:15}}>
-            <Entypo name="list" style={styles.menuIconOrders} />
-            <Text style={styles.menuFonts}>Orders</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("Orders")} style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom:15}}>
-            <AntDesign name="questioncircleo" style={styles.menuIconHelpCenter} />
-            <Text style={styles.menuFonts}>Help Center</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("Settings")} style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom:15}}>
-            <Ionicons  name="settings-sharp" style={styles.menuIconSettings} />
-            <Text style={styles.menuFonts}>Settings</Text>
-        </TouchableOpacity>
-
-        </View>
-    </Animated.View>
-
-    <View onTouchStart={closeDrawer} style={{flex:1, marginTop:20, marginLeft:17, marginRight:17}}>
-    
+    <Drawer drawerState={drawerState} />
+    <View onTouchStart={()=>setDrawerState(false)} style={{flex:1, marginTop:20, marginLeft:17, marginRight:17}}>
     {/* Header */}
     <View style={{flexDirection:'row', width:'100%', backgroundColor:''}}>
-        <TouchableOpacity style={{marginRight:'auto'}} onPress={()=>openDrawer()} >
+        <TouchableOpacity style={{marginRight:'auto'}} onPress={()=>setDrawerState(true)} >
             <MenuIcon name="menu" size={30} color="grey" />
         </TouchableOpacity>
         <View style={{marginLeft:'auto', marginRight:'auto', width:190}}>
@@ -104,7 +51,7 @@ const HomeScreen = ({navigation}) => {
             </View>
             <Text style={{color:'white', lineHeight:14}}>Inventory</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.mainScreens}>
+        <TouchableOpacity style={styles.mainScreens} disabled={drawerState} onPress={()=>navigation.navigate('Orders')}>
             <View style={{flexDirection:'row'}}>
                 <Text style={styles.mainScreenText}>345</Text>
                 <Text style={{color:'white', fontSize:20, alignSelf:'center'}}></Text>
@@ -113,6 +60,7 @@ const HomeScreen = ({navigation}) => {
         </TouchableOpacity>
     </View>
     </View>
+    <Cart/>
     </>
   )
 }

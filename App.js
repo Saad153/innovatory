@@ -14,6 +14,7 @@ import Settings from "./components/Screens/Settings";
 const Stack = createStackNavigator();
 function App() {
   return (
+    <>
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Home"
@@ -34,8 +35,7 @@ function App() {
         />
         <Stack.Screen name="Orders" component={Orders}
           options={{
-            title: 'My Orders Page',
-            headerTitleAlign:'center',
+            headerShown:false,
             //cardStyleInterpolator:CardStyleInterpolators.forFadeFromBottomAndroid,
           }}
         />
@@ -69,6 +69,8 @@ function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    
+    </>
   );
 }
 

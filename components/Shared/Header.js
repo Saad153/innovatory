@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const Header = ({navigation}) => {
+
+  useEffect(() => {
+    //console.log(navigation.getState().routes[1].name)
+  }, [])
+
   return (
     <View style={{backgroundColor:'#1A6DBB', flexDirection:'row', paddingTop:20, paddingBottom:0}}>
       <TouchableOpacity style={{marginRight:'auto'}} onPress={()=>navigation.navigate('Home')}>
@@ -11,12 +16,9 @@ const Header = ({navigation}) => {
         <Text style={{
           marginRight:'auto', marginLeft:'auto', fontFamily:'Inter-Bold', color:'white',
           fontSize:18
-          }}>Inventory Page</Text>
+          }}>{navigation.getState().routes[1].name} Page</Text>
         <View style={{marginLeft:'auto', width:45}}></View>
     </View>
   )
 }
 export default Header
-const styles = StyleSheet.create({
-
-})
